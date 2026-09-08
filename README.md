@@ -87,3 +87,49 @@ WARNING:tensorflow:TensorFlow GPU support is not available on native Windows for
  0.00000000e+00 8.61713409e+01 0.00000000e+00 0.00000000e+00
  0.00000000e+00 1.45472839e+02 1.23778831e+02 1.86362000e+02
  0.00000000e+00 0.00000000e+00 2.57657074e+02 1.17346649e+01]
+# test3.py
+~~~~
+#测试训练前后的神经网络输出
+import tensorflow as tf
+from tensorflow import keras
+mnist = tf.keras.datasets.mnist
+(x_train, y_train),(x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Flatten(input_shape=(28, 28)),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+print('训练前的神经网络对第一条训练数据的预测：')
+print(model.predict(x_train)[0])
+model.compile(optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=5)
+model.evaluate(x_test, y_test)
+print('训练后的神经网络对第一条训练数据的预测：')
+print(model.predict(x_train)[0])
+keras.utils.plot_model(model, "模型结构图.png")
+~~~~
+# 运行结果
+训练前的神经网络对第一条训练数据的预测：
+WARNING:tensorflow:TensorFlow GPU support is not available on native Windows for TensorFlow >= 2.11. Even if CUDA/cuDNN are installed, GPU will not be used. Please use WSL2 or the TensorFlow-DirectML plugin.
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 980us/step 
+[0.08604904 0.07076097 0.07437839 0.19559202 0.06171162 0.05784863
+ 0.06410777 0.17490444 0.10829253 0.10635467]
+Epoch 1/5
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9141 - loss: 0.2922     
+Epoch 2/5
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 2ms/step - accuracy: 0.9576 - loss: 0.1416  
+Epoch 3/5
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9678 - loss: 0.1056  
+Epoch 4/5
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 2ms/step - accuracy: 0.9731 - loss: 0.0863  
+Epoch 5/5
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 2ms/step - accuracy: 0.9771 - loss: 0.0732  
+313/313 ━━━━━━━━━━━━━━━━━━━━ 1s 2ms/step - accuracy: 0.9758 - loss: 0.0778   
+训练后的神经网络对第一条训练数据的预测：
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 986us/step 
+[2.9575379e-12 8.1436229e-07 1.7961187e-07 2.3123826e-01 6.7537689e-17
+ 7.6876074e-01 1.7130773e-12 1.0322935e-08 5.1455260e-11 3.8850121e-08]
